@@ -19,7 +19,7 @@ public class SQLAccess {
 	private static PreparedStatement preparedStatement = null;
 	private static ResultSet resultSet = null;
 
-	private ArrayList<Expense> getExpense(ResultSet resultSet) {
+	private static ArrayList<Expense> getExpense(ResultSet resultSet) {
 		ArrayList<Expense> expenseArray = new ArrayList<Expense>();
 		try {
 			while(resultSet.next()) {
@@ -35,12 +35,13 @@ public class SQLAccess {
 			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
+		} finally {
+			close();
 		}
-
 		return expenseArray;
 	}
 	
-	public String getTotalExpense(reportType type) {
+	public static String getTotalExpense(reportType type) {
 		ArrayList<Expense> expenses = getReport(type);
 		float total = 0;
 		
@@ -53,7 +54,7 @@ public class SQLAccess {
 		return totalExpense.getAmountString();
 	}
 
-	public ArrayList<Expense> getReport(reportType type) {
+	public static ArrayList<Expense> getReport(reportType type) {
 		open();
 		switch(type) {
 		case DAY:
@@ -74,13 +75,13 @@ public class SQLAccess {
 		return getExpense(resultSet);
 	}
 	
-	private ResultSet getDayReport() {
+	private static ResultSet getDayReport() {
 		Calendar endDate = Calendar.getInstance();
 		Date end = new Date(endDate.getTimeInMillis());
 		return query("SELECT id, paymentType, title, description, amount, createdAt, modifiedAt from finance.expense WHERE createdAt = '"+end.toString()+"'");
 	}
 	
-	private ResultSet getWeekReport() {
+	private static ResultSet getWeekReport() {
 		Calendar startDate = Calendar.getInstance();
 		Calendar endDate = Calendar.getInstance();
 		startDate.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
@@ -89,7 +90,7 @@ public class SQLAccess {
 		return query("SELECT id, paymentType, title, description, amount, createdAt, modifiedAt from finance.expense WHERE createdAt BETWEEN '"+beg.toString()+"' AND '"+end.toString()+"'");
 	}
 	
-	private ResultSet getMonthReport() {
+	private static ResultSet getMonthReport() {
 		Calendar startDate = Calendar.getInstance();
 		Calendar endDate = Calendar.getInstance();
 		startDate.set(Calendar.DAY_OF_MONTH, 1);
@@ -98,7 +99,7 @@ public class SQLAccess {
 		return query("SELECT id, paymentType, title, description, amount, createdAt, modifiedAt from finance.expense WHERE createdAt BETWEEN '"+beg.toString()+"' AND '"+end.toString()+"'");
 	}
 	
-	private ResultSet getYearReport() {
+	private static ResultSet getYearReport() {
 		Calendar startDate = Calendar.getInstance();
 		Calendar endDate = Calendar.getInstance();
 		startDate.set(Calendar.MONTH, Calendar.JANUARY);
@@ -108,7 +109,7 @@ public class SQLAccess {
 		return query("SELECT id, paymentType, title, description, amount, createdAt, modifiedAt from finance.expense WHERE createdAt BETWEEN '"+beg.toString()+"' AND '"+end.toString()+"'");
 	}
 
-	private ResultSet query(String sql) {
+	private static ResultSet query(String sql) {
 		open();
 		try {
 			resultSet = statement.executeQuery(sql);
@@ -120,7 +121,7 @@ public class SQLAccess {
 		return resultSet;
 	}
 
-	private void open() {
+	private static void open() {
 		// Loads MySQL Driver for our DB
 		try {
 			Class.forName("com.mysql.jdbc.Driver");

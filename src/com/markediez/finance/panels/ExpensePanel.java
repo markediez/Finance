@@ -21,9 +21,12 @@ public class ExpensePanel extends JPanel   {
 	private JComboBox<String> comboBoxPaymentType;
 	private JTextField textFieldTitle, textFieldAmount;
 	private JTextArea textAreaDescription;
+	private boolean isAdded;
 	public static Border outerBorder, innerBorder;
 	
-	public ExpensePanel() {}
+	public ExpensePanel() {
+		this.isAdded = false;
+	}
 	
 	public void showDialog() throws Exception {
 		int decision = JOptionPane.showConfirmDialog(null, getPanel(), "Add Expense", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -32,9 +35,12 @@ public class ExpensePanel extends JPanel   {
 			Expense newExpense = new Expense(textFieldTitle.getText(), textAreaDescription.getText(), Float.parseFloat(textFieldAmount.getText()), comboBoxPaymentType.getSelectedItem().toString());
 			JOptionPane.showMessageDialog(null, "Expense Added!\n\n" + newExpense.toString());
 			
+			isAdded = true;
 			SQLAccess.add(newExpense);
 		}
 	}
+	
+	public boolean isAdded() { return this.isAdded; }
 	
 	private JPanel getPanel() {
 		// Borders
