@@ -17,6 +17,7 @@ public class ReviewPanel {
 	JScrollPane panelDay, panelWeek, panelMonth, panelYear;
 	JPanel panel;
 	JTabbedPane tabbedPane;
+	ArrayList<Expense> day, week, month, year;
 	public  ReviewPanel() {
 		
 	}
@@ -55,25 +56,14 @@ public class ReviewPanel {
 		panelMonth = expenseToJPanel(SQLAccess.getReport(SQLAccess.reportType.MONTH));
 		panelYear = expenseToJPanel(SQLAccess.getReport(SQLAccess.reportType.YEAR));
 		
-		panelDay.validate();
-		panelWeek.validate();
-		panelMonth.validate();
-		panelYear.validate();
-		panel.validate();
-		tabbedPane.validate();
+		tabbedPane.removeAll();
 		
-		panelDay.revalidate();
-		panelWeek.revalidate();
-		panelMonth.revalidate();
-		panelYear.revalidate();
-		panel.revalidate();
-		tabbedPane.revalidate();
+		tabbedPane.addTab("TODAY", panelDay);
+		tabbedPane.addTab("THIS WEEK", panelWeek);
+		tabbedPane.addTab("THIS MONTH", panelMonth);
+		tabbedPane.addTab("THIS YEAR", panelYear);
 		
-		panelDay.repaint();
-		panelWeek.repaint();
-		panelMonth.repaint();
-		panelYear.repaint();
-		tabbedPane.repaint();
+		
 	}
 	
 	private JScrollPane expenseToJPanel(ArrayList<Expense> arrayExpense) {
