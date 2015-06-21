@@ -128,6 +128,7 @@ public class SQLAccess {
 			// Connects to the DB
 			connection = DriverManager.getConnection("jdbc:mysql://localhost/finance?"
 					+ "user=kohaku&password=kohaku");
+			
 			// Allow MySQL queries to the DB
 			statement = connection.createStatement();
 		} catch (Exception e) {
