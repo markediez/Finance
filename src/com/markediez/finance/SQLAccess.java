@@ -78,7 +78,7 @@ public class SQLAccess {
 	private static ResultSet getDayReport() {
 		Calendar endDate = Calendar.getInstance();
 		Date end = new Date(endDate.getTimeInMillis());
-		return query("SELECT id, paymentType, title, description, amount, createdAt, modifiedAt from finance.expense WHERE createdAt = '"+end.toString()+"'");
+		return query("SELECT * from expense WHERE createdAt = '"+end.toString()+"'");
 	}
 	
 	private static ResultSet getWeekReport() {
@@ -87,7 +87,7 @@ public class SQLAccess {
 		startDate.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		Date beg = new Date(startDate.getTimeInMillis());
 		Date end = new Date(endDate.getTimeInMillis());
-		return query("SELECT id, paymentType, title, description, amount, createdAt, modifiedAt from finance.expense WHERE createdAt BETWEEN '"+beg.toString()+"' AND '"+end.toString()+"'");
+		return query("SELECT * from expense WHERE createdAt BETWEEN '"+beg.toString()+"' AND '"+end.toString()+"'");
 	}
 	
 	private static ResultSet getMonthReport() {
@@ -96,7 +96,7 @@ public class SQLAccess {
 		startDate.set(Calendar.DAY_OF_MONTH, 1);
 		Date beg = new Date(startDate.getTimeInMillis());
 		Date end = new Date(endDate.getTimeInMillis());
-		return query("SELECT id, paymentType, title, description, amount, createdAt, modifiedAt from finance.expense WHERE createdAt BETWEEN '"+beg.toString()+"' AND '"+end.toString()+"'");
+		return query("SELECT * from expense WHERE createdAt BETWEEN '"+beg.toString()+"' AND '"+end.toString()+"'");
 	}
 	
 	private static ResultSet getYearReport() {
@@ -106,7 +106,7 @@ public class SQLAccess {
 		startDate.set(Calendar.DAY_OF_MONTH, 1);
 		Date beg = new Date(startDate.getTimeInMillis());
 		Date end = new Date(endDate.getTimeInMillis());
-		return query("SELECT id, paymentType, title, description, amount, createdAt, modifiedAt from finance.expense WHERE createdAt BETWEEN '"+beg.toString()+"' AND '"+end.toString()+"'");
+		return query("SELECT * from expense WHERE createdAt BETWEEN '"+beg.toString()+"' AND '"+end.toString()+"'");
 	}
 
 	private static ResultSet query(String sql) {
@@ -124,13 +124,14 @@ public class SQLAccess {
 	private static void open() {
 		// Loads MySQL Driver for our DB
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("org.sqlite.JDBC");
 			// Connects to the DB
-			connection = DriverManager.getConnection("jdbc:mysql://localhost/finance?"
-					+ "user=kohaku&password=kohaku");
+			connection = DriverManager.getConnection("jdbc:sqlite:finance.db");
+			System.out.println("Opened database successfully");
 			
 			// Allow MySQL queries to the DB
 			statement = connection.createStatement();
+			System.out.println("Connected to create statements successfully");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
@@ -150,16 +151,17 @@ public class SQLAccess {
 			if (connection != null) {
 				connection.close();
 			}
+			System.out.println("Closed connections successfully");
 		} catch (Exception e) {
 			System.out.println(e.getMessage() + " closing fail.");
 		}
 	}
 
 	public static void add(Expense newExpense) throws Exception {
-		connection = DriverManager.getConnection("jdbc:mysql://localhost/finance?"
-				+ "user=kohaku&password=kohaku");
+		connection = DriverManager.getConnection("jdbc:sqlite:finance.db");
 
-		preparedStatement = connection.prepareStatement("insert into finance.expense values (default,?,?,?,?,?,?)");
+		preparedStatement = connection.prepareStatement("insert into expense (paymentType, title, description, amount, createdAt, modifiedAt)"
+				+ "VALUES (?,?,?,?,?,?)");
 		preparedStatement.setString(1, newExpense.getPaymentType());
 		preparedStatement.setString(2, newExpense.getTitle());
 		preparedStatement.setString(3, newExpense.getDescription());
@@ -167,5 +169,6 @@ public class SQLAccess {
 		preparedStatement.setDate(5, newExpense.getCreatedDate());
 		preparedStatement.setDate(6, newExpense.getModifiedDate());
 		preparedStatement.executeUpdate();
+		System.out.println("Added an expense successfully");
 	}
 }
