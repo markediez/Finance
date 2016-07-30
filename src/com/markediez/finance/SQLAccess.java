@@ -8,7 +8,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement; 
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -28,8 +29,8 @@ public class SQLAccess {
 						resultSet.getString("description"), 
 						resultSet.getFloat("amount"), 
 						resultSet.getString("paymentType"),
-						resultSet.getDate("createdAt"),
-						resultSet.getDate("modifiedAt"));
+						resultSet.getString("createdAt"),
+						resultSet.getString("modifiedAt"));
 
 				expenseArray.add(readExpense);
 			}
@@ -78,7 +79,8 @@ public class SQLAccess {
 	private static ResultSet getDayReport() {
 		Calendar endDate = Calendar.getInstance();
 		Date end = new Date(endDate.getTimeInMillis());
-		return query("SELECT * from expense WHERE createdAt = '"+end.toString()+"'");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return query("SELECT * from expense WHERE createdAt = '"+ sdf.format(end) +"'");
 	}
 	
 	private static ResultSet getWeekReport() {
@@ -87,7 +89,9 @@ public class SQLAccess {
 		startDate.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		Date beg = new Date(startDate.getTimeInMillis());
 		Date end = new Date(endDate.getTimeInMillis());
-		return query("SELECT * from expense WHERE createdAt BETWEEN '"+beg.toString()+"' AND '"+end.toString()+"'");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		return query("SELECT * from expense WHERE createdAt BETWEEN '"+ sdf.format(beg) +"' AND '"+ sdf.format(end) +"'");
 	}
 	
 	private static ResultSet getMonthReport() {
@@ -96,7 +100,9 @@ public class SQLAccess {
 		startDate.set(Calendar.DAY_OF_MONTH, 1);
 		Date beg = new Date(startDate.getTimeInMillis());
 		Date end = new Date(endDate.getTimeInMillis());
-		return query("SELECT * from expense WHERE createdAt BETWEEN '"+beg.toString()+"' AND '"+end.toString()+"'");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		return query("SELECT * from expense WHERE createdAt BETWEEN '"+ sdf.format(beg) +"' AND '"+ sdf.format(end) +"'");
 	}
 	
 	private static ResultSet getYearReport() {
@@ -106,13 +112,17 @@ public class SQLAccess {
 		startDate.set(Calendar.DAY_OF_MONTH, 1);
 		Date beg = new Date(startDate.getTimeInMillis());
 		Date end = new Date(endDate.getTimeInMillis());
-		return query("SELECT * from expense WHERE createdAt BETWEEN '"+beg.toString()+"' AND '"+end.toString()+"'");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		return query("SELECT * from expense WHERE createdAt BETWEEN '"+ sdf.format(beg) +"' AND '"+ sdf.format(end) +"'");
 	}
 
 	private static ResultSet query(String sql) {
 		open();
 		try {
+			System.out.println("Attempting to query " + sql);
 			resultSet = statement.executeQuery(sql);
+			System.out.println("Success");
 		} catch (Exception e) {
 			System.out.println(sql);
 			System.out.println(e.getMessage());
@@ -166,8 +176,8 @@ public class SQLAccess {
 		preparedStatement.setString(2, newExpense.getTitle());
 		preparedStatement.setString(3, newExpense.getDescription());
 		preparedStatement.setFloat(4, newExpense.getAmount());
-		preparedStatement.setDate(5, newExpense.getCreatedDate());
-		preparedStatement.setDate(6, newExpense.getModifiedDate());
+		preparedStatement.setString(5, newExpense.getCreatedDate());
+		preparedStatement.setString(6, newExpense.getModifiedDate());
 		preparedStatement.executeUpdate();
 		System.out.println("Added an expense successfully");
 	}

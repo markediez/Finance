@@ -45,7 +45,6 @@ public class ReviewPanel {
 		tabbedPane.setSize(new Dimension(450,450));
 		
 		panel.add(tabbedPane, BorderLayout.CENTER);
-		SQLAccess.close();
 		return panel;
 
 	}

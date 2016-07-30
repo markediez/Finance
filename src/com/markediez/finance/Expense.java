@@ -2,8 +2,9 @@ package com.markediez.finance;
 
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.sql.Date;
+import java.util.Date;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import javax.swing.BorderFactory;
@@ -19,6 +20,7 @@ public class Expense {
 	private float amount;
 	private String paymentType;
 	private Date createdAt, modifiedAt;
+	private SimpleDateFormat sdf;
 	
 
 	// Constructors
@@ -32,6 +34,7 @@ public class Expense {
 		this.paymentType = "CASH";
 		this.createdAt = new Date(Calendar.getInstance().getTimeInMillis());
 		this.modifiedAt = new Date(Calendar.getInstance().getTimeInMillis());
+		this.sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	}
 
 	public Expense(String title, String description, float amount, String type) {
@@ -42,14 +45,20 @@ public class Expense {
 		this.paymentType = type;
 	}
 	
-	public Expense(int id, String title, String description, float amount, String type, Date createdDate, Date modifiedDate) {
+	public Expense(int id, String title, String description, float amount, String type, String createdDate, String modifiedDate) {
 		this();
 		this.title = title;
 		this.description = description;
 		this.amount = amount;
 		this.paymentType = type;
-		this.createdAt = createdDate;
-		this.modifiedAt = modifiedDate;
+		
+		try {
+			this.createdAt = (Date) sdf.parse(createdDate);
+			this.modifiedAt = (Date) sdf.parse(modifiedDate);
+		} catch (Exception e) {
+			System.out.println("Failed to parse date");
+			System.out.println(e.getMessage());
+		}
 	}
 
 	// Getters and Setters
@@ -59,8 +68,14 @@ public class Expense {
 	public float getAmount() { return this.amount; }
 	public String getAmountString(){ return "$" + df.format(getAmount());}
 	public String getPaymentType() { return this.paymentType; }
-	public Date getCreatedDate() { return this.createdAt; }
-	public Date getModifiedDate() { return this.modifiedAt; }
+	
+	public String getCreatedDate() { 
+		return sdf.format(this.createdAt); 
+	}
+	
+	public String getModifiedDate() {
+		return sdf.format(this.modifiedAt); 
+	}
 	
 	public void getId(int id) { this.id = id; }
 	public void setTitle(String title) { this.title = title; }
