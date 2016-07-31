@@ -66,7 +66,7 @@ public class Expense {
 	public String getTitle() { return this.title; }
 	public String getDescription() { return this.description; }
 	public float getAmount() { return this.amount; }
-	public String getAmountString(){ return "$" + df.format(getAmount());}
+	public String getAmountString(){ return df.format(getAmount());}
 	public String getPaymentType() { return this.paymentType; }
 	
 	public String getCreatedDate() { 
