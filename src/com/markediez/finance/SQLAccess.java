@@ -3,7 +3,7 @@
 package com.markediez.finance;
 
 import java.sql.Connection;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -77,18 +77,45 @@ public class SQLAccess {
 	}
 	
 	private static ResultSet getDayReport() {
+		System.out.println("Getting Day Report");
 		Calendar endDate = Calendar.getInstance();
-		Date end = new Date(endDate.getTimeInMillis());
+		Calendar startDate = Calendar.getInstance();
+		
+		startDate.set(Calendar.HOUR_OF_DAY, 0);
+		startDate.set(Calendar.MINUTE, 0);
+		startDate.set(Calendar.SECOND, 0);
+		startDate.set(Calendar.MILLISECOND, 0);
+		
+		endDate.set(Calendar.HOUR_OF_DAY, 23);
+		endDate.set(Calendar.MINUTE, 59);
+		endDate.set(Calendar.SECOND, 59);
+		endDate.set(Calendar.MILLISECOND, 999);
+		
+		Date end = endDate.getTime();
+		Date start = startDate.getTime();
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		return query("SELECT * from expense WHERE createdAt = '"+ sdf.format(end) +"'");
+		return query("SELECT * from expense WHERE createdAt BETWEEN '"+ sdf.format(start) +"' AND '" + sdf.format(end) + "'");
 	}
 	
 	private static ResultSet getWeekReport() {
 		Calendar startDate = Calendar.getInstance();
 		Calendar endDate = Calendar.getInstance();
+		
+		startDate.set(Calendar.HOUR_OF_DAY, 0);
+		startDate.set(Calendar.MINUTE, 0);
+		startDate.set(Calendar.SECOND, 0);
+		startDate.set(Calendar.MILLISECOND, 0);
+		
+		endDate.set(Calendar.HOUR_OF_DAY, 23);
+		endDate.set(Calendar.MINUTE, 59);
+		endDate.set(Calendar.SECOND, 59);
+		endDate.set(Calendar.MILLISECOND, 59);
+		
 		startDate.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		Date beg = new Date(startDate.getTimeInMillis());
 		Date end = new Date(endDate.getTimeInMillis());
+	
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		return query("SELECT * from expense WHERE createdAt BETWEEN '"+ sdf.format(beg) +"' AND '"+ sdf.format(end) +"'");
@@ -97,6 +124,17 @@ public class SQLAccess {
 	private static ResultSet getMonthReport() {
 		Calendar startDate = Calendar.getInstance();
 		Calendar endDate = Calendar.getInstance();
+		
+		startDate.set(Calendar.HOUR_OF_DAY, 0);
+		startDate.set(Calendar.MINUTE, 0);
+		startDate.set(Calendar.SECOND, 0);
+		startDate.set(Calendar.MILLISECOND, 0);
+		
+		endDate.set(Calendar.HOUR_OF_DAY, 23);
+		endDate.set(Calendar.MINUTE, 59);
+		endDate.set(Calendar.SECOND, 59);
+		endDate.set(Calendar.MILLISECOND, 59);
+		
 		startDate.set(Calendar.DAY_OF_MONTH, 1);
 		Date beg = new Date(startDate.getTimeInMillis());
 		Date end = new Date(endDate.getTimeInMillis());
@@ -108,6 +146,17 @@ public class SQLAccess {
 	private static ResultSet getYearReport() {
 		Calendar startDate = Calendar.getInstance();
 		Calendar endDate = Calendar.getInstance();
+		
+		startDate.set(Calendar.HOUR_OF_DAY, 0);
+		startDate.set(Calendar.MINUTE, 0);
+		startDate.set(Calendar.SECOND, 0);
+		startDate.set(Calendar.MILLISECOND, 0);
+		
+		endDate.set(Calendar.HOUR_OF_DAY, 23);
+		endDate.set(Calendar.MINUTE, 59);
+		endDate.set(Calendar.SECOND, 59);
+		endDate.set(Calendar.MILLISECOND, 59);
+		
 		startDate.set(Calendar.MONTH, Calendar.JANUARY);
 		startDate.set(Calendar.DAY_OF_MONTH, 1);
 		Date beg = new Date(startDate.getTimeInMillis());
